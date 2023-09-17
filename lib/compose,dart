@@ -1,0 +1,61 @@
+
+
+
+
+class ComposeWidget extends StatefulWidget {
+  final OnCompose onCompose;
+  const ComposeWidget({
+    super.key,
+    required this.onCompose,
+  });
+
+  @override
+  State<ComposeWidget> createState() => _ComposeWidgetState();
+}
+
+class _ComposeWidgetState extends State<ComposeWidget> {
+  late final TextEditingController _firstNameController;
+  late final TextEditingController _lastNameController;
+
+  @override
+  void initState() {
+    _firstNameController = TextEditingController();
+    _lastNameController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        children: [
+          TextField(
+            controller: _firstNameController,
+            decoration: const InputDecoration(hintText: 'Enter the first name'),
+          ),
+          TextField(
+            controller: _lastNameController,
+            decoration: const InputDecoration(hintText: 'Enter the last name'),
+          ),
+          TextButton(
+            onPressed: () {
+              final firstName = _firstNameController.text;
+              final lastName = _lastNameController.text;
+              widget.onCompose(firstName, lastName);
+              _firstNameController.clear();
+              _lastNameController.clear();
+            },
+            child: const Text('Add to the list'),
+          ),
+        ],
+      ),
+    );
+  }
+}
