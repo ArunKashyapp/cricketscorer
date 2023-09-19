@@ -1,9 +1,12 @@
-import 'package:cricket/features/add_team/screen/add_team.dart';
+
+import 'package:cricket/router.dart';
 import 'package:cricket/theme/color_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:routemaster/routemaster.dart';
 
 void main(List<String> args) {
-  runApp(const CricketApp());
+  runApp(const ProviderScope(child:  CricketApp()));
 }
 
 class CricketApp extends StatelessWidget {
@@ -11,13 +14,18 @@ class CricketApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerDelegate: RoutemasterDelegate(
+        routesBuilder: (context) {
+          return newRoute;
+        },
+      ),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: ColorConstant.green600,
         useMaterial3: true,
       ),
-      home: const AddTeam(),
+      routeInformationParser: const RoutemasterParser(),
     );
   }
 }
