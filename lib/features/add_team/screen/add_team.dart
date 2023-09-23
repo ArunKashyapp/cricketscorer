@@ -1,5 +1,6 @@
 import 'package:cricket/core/sizing.dart';
 import 'package:cricket/theme/app_styles.dart';
+import 'package:cricket/widgets/custom_button.dart';
 import 'package:cricket/widgets/custom_tff.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,7 +65,9 @@ class _AddTeamState extends ConsumerState<AddTeam> {
           Padding(
             padding: getPadding(left: 40),
             child: showSecondTextField
-                ? TextButton(
+                ? CustomButton(
+                    width: getHorizontalSize(90),
+                    height: getVerticalSize(40),
                     onPressed: () {
                       setState(() {
                         if (showSecondTextField) {
@@ -77,14 +80,12 @@ class _AddTeamState extends ConsumerState<AddTeam> {
                         }
                       });
                     },
-                    child: Text(
-                      'BACK',
-                      style: AppStyle.txtPoppinsMedium18Black900,
-                    ),
-                  )
+                    text: 'BACK')
                 : const SizedBox(),
           ),
-          TextButton(
+          CustomButton(
+            width: getHorizontalSize(90),
+            height: getVerticalSize(40),
             onPressed: () {
               setState(() {
                 if (!showSecondTextField && firstTController.text.isNotEmpty) {
@@ -99,11 +100,8 @@ class _AddTeamState extends ConsumerState<AddTeam> {
                 }
               });
             },
-            child: Text(
-              showSecondTextField ? 'SUBMIT' : 'NEXT',
-              style: AppStyle.txtPoppinsMedium18Black900,
-            ),
-          ),
+            text: showSecondTextField ? 'SUBMIT' : 'NEXT',
+          )
         ],
       ),
     );

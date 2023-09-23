@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class AppStyle {
   static TextStyle txtPoppinsMedium13Orange700 = TextStyle(
+    overflow: TextOverflow.fade,
     color: ColorConstant.orange700,
     fontSize: getFontSize(
       13,
@@ -400,10 +401,8 @@ class AppStyle {
   );
 
   static TextStyle txtPoppinsMedium18Black900 = TextStyle(
+    overflow: TextOverflow.fade,
     color: ColorConstant.black900,
-    fontSize: getFontSize(
-      18,
-    ),
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w500,
   );

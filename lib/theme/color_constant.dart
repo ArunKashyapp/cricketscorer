@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class ColorConstant {
   static Color black9003f = fromHex('#3f000000');
+  static Color red = Color.fromARGB(255, 169, 12, 1);
 
   static Color green600 = fromHex('#34a853');
 
