@@ -7,7 +7,12 @@ final newRoute = RouteMap(routes: {
   '/': (_) => const MaterialPage(
         child: AddTeam(),
       ),
-  '/toss-screen': (_) => const MaterialPage(
-        child: TossScreen(),
-      ),
+ '/toss-screen': (routeData) {
+  final teamName1 = routeData.queryParameters['teamName1'];
+  final teamName2 = routeData.queryParameters['teamName2'];
+  return  MaterialPage(
+    child: TossScreen(teamName1: teamName1!, teamName2: teamName2!),
+  );
+},
+
 });

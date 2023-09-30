@@ -1,12 +1,16 @@
-
 import 'package:cricket/router.dart';
 import 'package:cricket/theme/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:flutter/services.dart';
 
 void main(List<String> args) {
-  runApp(const ProviderScope(child:  CricketApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  runApp(const ProviderScope(child: CricketApp()));
 }
 
 class CricketApp extends StatelessWidget {
@@ -29,3 +33,7 @@ class CricketApp extends StatelessWidget {
     );
   }
 }
+
+
+
+ 

@@ -1,5 +1,5 @@
 import 'package:cricket/core/sizing.dart';
-import 'package:cricket/theme/app_styles.dart';
+import 'package:cricket/features/add_team/repository/team_repository.dart';
 import 'package:cricket/widgets/custom_button.dart';
 import 'package:cricket/widgets/custom_tff.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,15 @@ class _AddTeamState extends ConsumerState<AddTeam> {
   final firstTController = TextEditingController();
   final secondTController = TextEditingController();
   bool showSecondTextField = false;
+  String? teamName1;
+  String? teamName2;
+  final TeamDb _teamDb = TeamDb(dbName: 'db.sqlite');
+
+  @override
+  void initState() {
+    super.initState();
+    _teamDb.open(); // Open the database when the widget is initialized
+  }
 
   @override
   void dispose() {
@@ -25,11 +34,10 @@ class _AddTeamState extends ConsumerState<AddTeam> {
     secondTController.dispose();
   }
 
-  void navigateToToss() {
-    Routemaster.of(context).push('toss-screen');
-  }
+ void navigateToToss() {
+  Routemaster.of(context).push('toss-screen?teamName1=$teamName1&teamName2=$teamName2');
+}
 
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +54,17 @@ class _AddTeamState extends ConsumerState<AddTeam> {
                 child: Padding(
                   padding: getPadding(all: 30),
                   child: CustomTextField(
+                    onChanged: showSecondTextField
+                        ? (value) {
+                            setState(() {
+                              teamName2 = value;
+                            });
+                          }
+                        : (value) {
+                            setState(() {
+                              teamName1 = value;
+                            });
+                          },
                     hintText: showSecondTextField
                         ? 'Enter second Team Name'
                         : 'Enter first Team Name',
@@ -87,12 +106,18 @@ class _AddTeamState extends ConsumerState<AddTeam> {
             width: getHorizontalSize(90),
             height: getVerticalSize(40),
             onPressed: () {
-              setState(() {
+              setState(()  {
                 if (!showSecondTextField && firstTController.text.isNotEmpty) {
+                   _teamDb.createTeamTable(teamName1!);
+                  print('team created');
+
                   // Switch to the second text field
+
                   showSecondTextField = true;
                 } else if (secondTController.text.isNotEmpty &&
                     firstTController.text.isNotEmpty) {
+                   _teamDb.createTeamTable(teamName2!);
+
                   // Perform your action when both team names are entered
                   // For example, navigate to the next page
                   // You can add your navigation logic here
