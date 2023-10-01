@@ -18,10 +18,10 @@ class TeamDb {
     final path = '${directory.path}/$dbName';
 
     try {
-      final db = await openDatabase(path);
+      final db = await openDatabase(path, singleInstance: true);
       _db = db;
 
-      const create = ''' CREATE TABLE "TEAM" (
+      const create = ''' CREATE TABLE IF NOT EXISTS "TEAM" (
 	"TEAM_ID"	INTEGER NOT NULL,
 	"TEAM_NAME"	TEXT NOT NULL,
 	PRIMARY KEY("TEAM_ID" AUTOINCREMENT)

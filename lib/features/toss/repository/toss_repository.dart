@@ -1,3 +1,4 @@
+import 'package:cricket/Model/match_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -21,7 +22,7 @@ class MatchDb {
       _db = db;
 
       const create = ''' 
-        CREATE TABLE "MATCH" (
+        CREATE TABLE IF NOT EXISTS "MATCH" (
           "MATCH_ID" INTEGER NOT NULL,
           "TEAM_ID1" INTEGER NOT NULL,
           "TEAM_ID2" INTEGER NOT NULL,
@@ -78,8 +79,17 @@ class MatchDb {
         ]);
         print(matches);
 
+        final matchModel = MatchModel(
+          teamId1: teamId1,
+          teamId2: teamId2,
+          tossWinnerId: tossWinnerId,
+          matchData: DateTime.now(),
+          tossLooserId: tossWinnerId == teamId1 ? teamId2 : teamId1,
+        );
+
         return true;
       } else {
+        
         print('Error: One or more teams not found.');
         return false;
       }
@@ -97,7 +107,11 @@ class MatchDb {
 
     try {
       final result = await db.query('TEAM',
-          columns: ['TEAM_ID'], where: 'TEAM_NAME = ?', whereArgs: [teamName]);
+          columns: ['TEAM_ID'],
+          where: 'TEAM_NAME = ?',
+          whereArgs: [teamName],
+          orderBy: 'TEAM_ID DESC',
+          limit: 1);
 
       if (result.isNotEmpty) {
         return result.first['TEAM_ID'] as int;
