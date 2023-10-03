@@ -1,4 +1,3 @@
-import 'package:cricket/Model/match_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -22,19 +21,21 @@ class MatchDb {
       _db = db;
 
       const create = ''' 
-        CREATE TABLE IF NOT EXISTS "MATCH" (
-          "MATCH_ID" INTEGER NOT NULL,
-          "TEAM_ID1" INTEGER NOT NULL,
-          "TEAM_ID2" INTEGER NOT NULL,
-          "TOSS_WINNER_ID" INTEGER NOT NULL,
-          "MATCH_DATE" NUMERIC NOT NULL,
-          "TOSS_LOOSER_ID" INTEGER NOT NULL,
-          PRIMARY KEY("MATCH_ID"),
-          FOREIGN KEY("TEAM_ID1") REFERENCES "TEAM"("TEAM_ID"),
-          FOREIGN KEY("TOSS_WINNER_ID") REFERENCES "TEAM"("TEAM_ID"),
-          FOREIGN KEY("TEAM_ID2") REFERENCES "TEAM"("TEAM_ID"),
-          FOREIGN KEY("TOSS_LOOSER_ID") REFERENCES "TEAM"("TEAM_ID")
-        )
+       CREATE TABLE IF NOT EXISTS "MATCH" (
+	"MATCH_ID"	INTEGER NOT NULL,
+	"TEAM_ID1"	INTEGER NOT NULL,
+	"TEAM_ID2"	INTEGER NOT NULL,
+	"TOSS_WINNER_ID"	INTEGER NOT NULL,
+	"MATCH_DATE"	NUMERIC NOT NULL,
+	"TOSS_LOOSER_ID"	INTEGER NOT NULL,
+	"BATTING_TEAM_ID"	INTEGER,
+	FOREIGN KEY("TEAM_ID1") REFERENCES "TEAM"("TEAM_ID"),
+	FOREIGN KEY("TOSS_WINNER_ID") REFERENCES "TEAM"("TEAM_ID"),
+	FOREIGN KEY("TOSS_LOOSER_ID") REFERENCES "TEAM"("TEAM_ID"),
+	FOREIGN KEY("TEAM_ID2") REFERENCES "TEAM"("TEAM_ID"),
+	FOREIGN KEY("BATTING_TEAM_ID") REFERENCES "TEAM"("TEAM_ID"),
+	PRIMARY KEY("MATCH_ID")
+);
       ''';
 
       db.execute(create);
@@ -45,11 +46,11 @@ class MatchDb {
     }
   }
 
-  Future<bool> createMatch(
+  Future<int?> createMatch(
       String teamName1, String teamName2, String tossWinnerName) async {
     final db = _db;
     if (db == null) {
-      return false;
+      return null;
     }
 
     try {
@@ -66,35 +67,165 @@ class MatchDb {
           'TOSS_WINNER_ID': tossWinnerId,
           'MATCH_DATE': DateTime.now().toUtc().millisecondsSinceEpoch,
           'TOSS_LOOSER_ID': tossWinnerId == teamId1 ? teamId2 : teamId1,
+          'BATTING_TEAM_ID': null,
         });
 
         print('Match created with ID: $matchId');
-        final matches = await db.query('MATCH', columns: [
-          'MATCH_ID',
+
+        return matchId; // Return the matchId
+      } else {
+        print('Error: One or more teams not found.');
+        return null;
+      }
+    } catch (e) {
+      print('Error in createMatch: $e');
+      return null;
+    }
+  }
+
+  Future<bool> updateMatch(int matchId, bool isBatting) async {
+    final db = _db;
+    if (db == null) {
+      return false;
+    }
+
+    try {
+      // Get Toss Winner ID
+      final tossWinnerId = await getTossWinnerId(matchId);
+      final tossLooserId = await getTossLooserId(matchId);
+
+      if (tossWinnerId != null) {
+        // Update 'MATCH' table
+        await db.update(
+          'MATCH',
+          {
+            'BATTING_TEAM_ID': isBatting ? tossWinnerId : tossLooserId,
+          },
+          where: 'MATCH_ID = ?',
+          whereArgs: [matchId],
+        );
+
+        final result = await db.query('MATCH', columns: [
           'TEAM_ID1',
           'TEAM_ID2',
           'TOSS_WINNER_ID',
           'MATCH_DATE',
-          'TOSS_LOOSER_ID'
+          'TOSS_LOOSER_ID',
+          'BATTING_TEAM_ID',
         ]);
-        print(matches);
+        print(result);
 
-        final matchModel = MatchModel(
-          teamId1: teamId1,
-          teamId2: teamId2,
-          tossWinnerId: tossWinnerId,
-          matchData: DateTime.now(),
-          tossLooserId: tossWinnerId == teamId1 ? teamId2 : teamId1,
-        );
+        print(
+            'Match with ID $matchId updated. Batting Team set based on user choice.');
 
         return true;
       } else {
-        
-        print('Error: One or more teams not found.');
+        print('Error: Toss winner not found for match with ID $matchId.');
         return false;
       }
     } catch (e) {
-      print('Error in createMatch: $e');
+      print('Error in updateMatch: $e');
+      return false;
+    }
+  }
+
+  Future<int?> getTossWinnerId(int matchId) async {
+    final db = _db;
+    if (db == null) {
+      return null;
+    }
+
+    try {
+      final result = await db.query(
+        'MATCH',
+        columns: ['TOSS_WINNER_ID'],
+        where: 'MATCH_ID = ?',
+        whereArgs: [matchId],
+      );
+
+      if (result.isNotEmpty) {
+        return result.first['TOSS_WINNER_ID'] as int;
+      } else {
+        return null; // Toss winner ID not found for the specified match ID
+      }
+    } catch (e) {
+      print('Error fetching toss winner ID: $e');
+      return null;
+    }
+  }
+
+  Future<int?> getTossLooserId(int matchId) async {
+    final db = _db;
+    if (db == null) {
+      return null;
+    }
+
+    try {
+      final result = await db.query(
+        'MATCH',
+        columns: ['TOSS_LOOSER_ID'],
+        where: 'MATCH_ID = ?',
+        whereArgs: [matchId],
+      );
+
+      if (result.isNotEmpty) {
+        return result.first['TOSS_LOOSER_ID'] as int;
+      } else {
+        return null; // Toss winner ID not found for the specified match ID
+      }
+    } catch (e) {
+      print('Error fetching TOSS_LOOSER_ID ID: $e');
+      return null;
+    }
+  }
+
+  // Future<bool> updateMatchTable() {
+  //   final db = _db;
+  //   if(db!=null){
+  //      db.update(
+  //         'MATCH',
+  //         {
+  //           'BATTING_TEAM_ID': battingTeamId,
+  //         },
+  //         where: 'MATCH_ID = ?',
+  //         whereArgs: [matchId],
+  //       );
+  //   }
+
+  // }
+
+  Future<bool> updateMatchBattingTeam(
+      int matchId, String battingTeamName) async {
+    final db = _db;
+    if (db == null) {
+      return false;
+    }
+
+    try {
+      // Get Batting Team ID
+      final battingTeamId = await getTeamIdByName(battingTeamName);
+
+      if (battingTeamId != null) {
+        // Update 'MATCH' table
+        await db.update(
+          'MATCH',
+          {
+            'BATTING_TEAM_ID': battingTeamId,
+          },
+          where: 'MATCH_ID = ?',
+          whereArgs: [matchId],
+        );
+
+        print(
+            'Match with ID $matchId updated. Batting Team set to $battingTeamName');
+
+        return true;
+      } else {
+        print('Error: Batting team not found.');
+        return false;
+      }
+    } catch (e) {
+      print('Error in updateMatchBattingTeam: $e');
       return false;
     }
   }
