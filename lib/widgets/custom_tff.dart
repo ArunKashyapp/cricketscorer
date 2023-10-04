@@ -7,9 +7,11 @@ class CustomTextField extends StatelessWidget {
   final TextInputType inputType;
   final TextEditingController? controller;
   final void Function(String)? onChanged;
+  final  void Function()? onPressedofSuffixIcon;
  const  CustomTextField({
     super.key,
     required this.hintText,
+    this.onPressedofSuffixIcon,
   
     required this.inputType,
     required this.controller,
@@ -28,9 +30,9 @@ class CustomTextField extends StatelessWidget {
       
         hintText: hintText,
         suffixIcon: IconButton(
-          onPressed: () {
-            controller!.clear();
-          },
+          onPressed: onPressedofSuffixIcon,
+           
+          
           icon: const Icon(
             Icons.clear,
             color: Color.fromARGB(255, 169, 12, 1),

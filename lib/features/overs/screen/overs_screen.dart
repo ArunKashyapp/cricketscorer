@@ -3,16 +3,21 @@ import 'package:cricket/theme/app_styles.dart';
 import 'package:cricket/widgets/custom_button.dart';
 import 'package:cricket/widgets/custom_tff.dart';
 import 'package:flutter/material.dart';
+import 'package:routemaster/routemaster.dart';
 
 class OverScreen extends StatefulWidget {
   const OverScreen({super.key});
 
   @override
-  _OverScreenState createState() => _OverScreenState();
+  State<OverScreen> createState() => _OverScreenState();
 }
 
 class _OverScreenState extends State<OverScreen> {
   final oversController = TextEditingController();
+
+  void navigateToChoose() {
+    Routemaster.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +43,11 @@ class _OverScreenState extends State<OverScreen> {
                       style: AppStyle.txtPoppinsMedium18WhiteA700,
                     ),
                     CustomTextField(
+                      onPressedofSuffixIcon: () {
+                        setState(() {
+                          oversController.clear();
+                        });
+                      },
                       inputType: TextInputType.number,
                       hintText: 'Enter the no of overs',
                       controller: oversController,
@@ -111,7 +121,9 @@ class _OverScreenState extends State<OverScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            navigateToChoose();
+                          },
                           text: 'BACK',
                           width: getHorizontalSize(80),
                           height: getVerticalSize(40),

@@ -25,6 +25,10 @@ class _TossScreenState extends ConsumerState<TossScreen> {
   final MatchDb _matchDb = MatchDb(dbName: 'db.sqlite');
   int matchId = 0;
 
+  void navigateToOvers() {
+    Routemaster.of(context).push('/over-screen');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -63,6 +67,7 @@ class _TossScreenState extends ConsumerState<TossScreen> {
                                     setState(() {
                                       _matchDb.updateMatch(matchId, true);
                                     });
+                                    navigateToOvers();
                                   },
                                   icon: Icon(
                                     Icons.sports_cricket_rounded,
@@ -99,6 +104,7 @@ class _TossScreenState extends ConsumerState<TossScreen> {
                                     setState(() {
                                       _matchDb.updateMatch(matchId, false);
                                     });
+                                    navigateToOvers();
                                   },
                                   icon: Icon(
                                     Icons.sports_baseball_rounded,

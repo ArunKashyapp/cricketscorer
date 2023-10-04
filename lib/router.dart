@@ -6,7 +6,7 @@ import 'package:routemaster/routemaster.dart';
 
 final newRoute = RouteMap(routes: {
   '/': (_) => const MaterialPage(
-        child: OverScreen(),
+        child: AddTeam(),
       ),
   '/toss-screen': (routeData) {
     final teamName1 = routeData.queryParameters['teamName1'];
@@ -16,6 +16,6 @@ final newRoute = RouteMap(routes: {
     );
   },
   '/over-screen': (_) {
-    return const MaterialPage(child:  OverScreen());
+    return const MaterialPage(child: OverScreen());
   }
 });

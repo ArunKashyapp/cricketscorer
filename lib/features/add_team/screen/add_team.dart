@@ -55,6 +55,9 @@ class _AddTeamState extends ConsumerState<AddTeam> {
                 child: Padding(
                   padding: getPadding(all: 30),
                   child: CustomTextField(
+                    onPressedofSuffixIcon: () => showSecondTextField
+                        ? secondTController.clear()
+                        : firstTController.clear(),
                     inputType: TextInputType.name,
                     onChanged: showSecondTextField
                         ? (value) {
