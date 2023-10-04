@@ -41,8 +41,8 @@ class _TossScreenState extends ConsumerState<TossScreen> {
             padding: getPadding(all: 12),
             child: ClipOval(
               child: Container(
-                height: getHorizontalSize(350),
-                width: getVerticalSize(500),
+                height: getVerticalSize(350),
+                width: getHorizontalSize(500),
                 color: Colors.green,
                 child: Center(
                     child: Column(

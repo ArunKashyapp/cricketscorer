@@ -34,9 +34,10 @@ class _AddTeamState extends ConsumerState<AddTeam> {
     secondTController.dispose();
   }
 
- void navigateToToss() {
-  Routemaster.of(context).push('toss-screen?teamName1=$teamName1&teamName2=$teamName2');
-}
+  void navigateToToss() {
+    Routemaster.of(context)
+        .push('toss-screen?teamName1=$teamName1&teamName2=$teamName2');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,13 +48,14 @@ class _AddTeamState extends ConsumerState<AddTeam> {
           padding: getPadding(all: 12),
           child: ClipOval(
             child: Container(
-              height: getHorizontalSize(350),
-              width: getVerticalSize(500),
+              height: getVerticalSize(350),
+              width: getHorizontalSize(500),
               color: Colors.green,
               child: Center(
                 child: Padding(
                   padding: getPadding(all: 30),
                   child: CustomTextField(
+                    inputType: TextInputType.name,
                     onChanged: showSecondTextField
                         ? (value) {
                             setState(() {
@@ -106,9 +108,9 @@ class _AddTeamState extends ConsumerState<AddTeam> {
             width: getHorizontalSize(90),
             height: getVerticalSize(40),
             onPressed: () {
-              setState(()  {
+              setState(() {
                 if (!showSecondTextField && firstTController.text.isNotEmpty) {
-                   _teamDb.createTeamTable(teamName1!);
+                  _teamDb.createTeamTable(teamName1!);
                   print('team created');
 
                   // Switch to the second text field
@@ -116,7 +118,7 @@ class _AddTeamState extends ConsumerState<AddTeam> {
                   showSecondTextField = true;
                 } else if (secondTController.text.isNotEmpty &&
                     firstTController.text.isNotEmpty) {
-                   _teamDb.createTeamTable(teamName2!);
+                  _teamDb.createTeamTable(teamName2!);
 
                   // Perform your action when both team names are entered
                   // For example, navigate to the next page

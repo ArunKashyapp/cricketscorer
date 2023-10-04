@@ -50,6 +50,7 @@ class MatchDb {
       String teamName1, String teamName2, String tossWinnerName) async {
     final db = _db;
     if (db == null) {
+      
       return null;
     }
 
