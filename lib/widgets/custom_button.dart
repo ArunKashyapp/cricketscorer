@@ -28,7 +28,7 @@ class CustomButton extends StatelessWidget {
         
         
           style: ButtonStyle(
-              
+          
               backgroundColor:
                   MaterialStatePropertyAll(ColorConstant.cricketPitchColor)),
           onPressed: onPressed,

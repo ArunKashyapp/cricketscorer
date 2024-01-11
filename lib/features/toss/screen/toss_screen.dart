@@ -23,6 +23,11 @@ class _TossScreenState extends ConsumerState<TossScreen> {
   final String teamName1;
   final String teamName2;
   final MatchDb _matchDb = MatchDb(dbName: 'db.sqlite');
+  int matchId = 0;
+
+  void navigateToOvers() {
+    Routemaster.of(context).push('/over-screen');
+  }
 
   @override
   void initState() {
@@ -40,8 +45,8 @@ class _TossScreenState extends ConsumerState<TossScreen> {
             padding: getPadding(all: 12),
             child: ClipOval(
               child: Container(
-                height: getHorizontalSize(350),
-                width: getVerticalSize(500),
+                height: getVerticalSize(350),
+                width: getHorizontalSize(500),
                 color: Colors.green,
                 child: Center(
                     child: Column(
@@ -58,7 +63,12 @@ class _TossScreenState extends ConsumerState<TossScreen> {
                         children: [
                           isSelected
                               ? TextButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {
+                                      _matchDb.updateMatch(matchId, true);
+                                    });
+                                    navigateToOvers();
+                                  },
                                   icon: Icon(
                                     Icons.sports_cricket_rounded,
                                     color: ColorConstant.red,
@@ -71,12 +81,18 @@ class _TossScreenState extends ConsumerState<TossScreen> {
                                     style: AppStyle.txtPoppinsMedium18Black900,
                                   ))
                               : CustomButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _matchDb.createMatch(
-                                          teamName1, teamName2, teamName1);
-                                      isSelected = true;
-                                    });
+                                  onPressed: () async {
+                                    final mId = await _matchDb.createMatch(
+                                        teamName1, teamName2, teamName1);
+                                    if (mId != null) {
+                                      setState(() {
+                                        isSelected = true;
+                                        matchId = mId;
+                                        // Now you can use the matchId as needed.
+                                        print(
+                                            'Match ID in toss xcreen : $matchId');
+                                      });
+                                    }
                                   },
                                   text: teamName1,
                                   width: getHorizontalSize(100),
@@ -84,7 +100,12 @@ class _TossScreenState extends ConsumerState<TossScreen> {
                                 ),
                           isSelected
                               ? TextButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {
+                                      _matchDb.updateMatch(matchId, false);
+                                    });
+                                    navigateToOvers();
+                                  },
                                   icon: Icon(
                                     Icons.sports_baseball_rounded,
                                     color: ColorConstant.red,

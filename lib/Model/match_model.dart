@@ -7,6 +7,7 @@ class MatchModel {
   final int tossWinnerId;
   final DateTime matchData;
   final int tossLooserId;
+  final int? battingTeamId;
   MatchModel({
     this.id,
     required this.teamId1,
@@ -14,6 +15,7 @@ class MatchModel {
     required this.tossWinnerId,
     required this.matchData,
     required this.tossLooserId,
+    required this.battingTeamId,
   });
 
   MatchModel copyWith({
@@ -23,6 +25,7 @@ class MatchModel {
     int? tossWinnerId,
     DateTime? matchData,
     int? tossLooserId,
+    int? battingTeamId,
   }) {
     return MatchModel(
       id: id ?? this.id,
@@ -31,6 +34,7 @@ class MatchModel {
       tossWinnerId: tossWinnerId ?? this.tossWinnerId,
       matchData: matchData ?? this.matchData,
       tossLooserId: tossLooserId ?? this.tossLooserId,
+      battingTeamId: battingTeamId ?? this.battingTeamId,
     );
   }
 
@@ -45,6 +49,7 @@ class MatchModel {
     result.addAll({'tossWinnerId': tossWinnerId});
     result.addAll({'matchData': matchData.millisecondsSinceEpoch});
     result.addAll({'tossLooserId': tossLooserId});
+    result.addAll({'battingTeamId': battingTeamId});
   
     return result;
   }
@@ -57,16 +62,18 @@ class MatchModel {
       tossWinnerId: map['tossWinnerId']?.toInt() ?? 0,
       matchData: DateTime.fromMillisecondsSinceEpoch(map['matchData']),
       tossLooserId: map['tossLooserId']?.toInt() ?? 0,
+      battingTeamId: map['battingTeamId']?.toInt() ?? 0,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory MatchModel.fromJson(String source) => MatchModel.fromMap(json.decode(source));
+  factory MatchModel.fromJson(String source) =>
+      MatchModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'MatchModel(id: $id, teamId1: $teamId1, teamId2: $teamId2, tossWinnerId: $tossWinnerId, matchData: $matchData, tossLooserId: $tossLooserId)';
+    return 'MatchModel(id: $id, teamId1: $teamId1, teamId2: $teamId2, tossWinnerId: $tossWinnerId, matchData: $matchData, tossLooserId: $tossLooserId, battingTeamId: $battingTeamId)';
   }
 
   @override
@@ -79,7 +86,8 @@ class MatchModel {
       other.teamId2 == teamId2 &&
       other.tossWinnerId == tossWinnerId &&
       other.matchData == matchData &&
-      other.tossLooserId == tossLooserId;
+      other.tossLooserId == tossLooserId &&
+      other.battingTeamId == battingTeamId;
   }
 
   @override
@@ -89,6 +97,7 @@ class MatchModel {
       teamId2.hashCode ^
       tossWinnerId.hashCode ^
       matchData.hashCode ^
-      tossLooserId.hashCode;
+      tossLooserId.hashCode ^
+      battingTeamId.hashCode;
   }
 }
